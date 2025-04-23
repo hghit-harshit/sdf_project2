@@ -30,6 +30,11 @@ rule token = parse
   | '*'             { TIMES }
   | var             { VAR (Lexing.lexeme lexbuf) }
   | eof             { EOF }
+  | "try"           { TRY }
+  | "with"          { WITH }
+  | "raise"         { RAISE }
+  | "DivByZero"     { DIVZERO }
+  | "GenExp"        { GENEX }
 
 {
 }

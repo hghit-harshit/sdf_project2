@@ -19,10 +19,10 @@
     [f] is a stack of frames, [s] is a stack of machine values, and
     [e] is a stack of environments. At each step the machine executes
     the first instruction of the first frame from [f].
-*)
+**)
 
 (** The datatype of variable names. A more efficient implementation
-    would use de Bruijn indices but we want to keep things simple. *)
+    would use de Bruijn indices but we want to keep things simple. **)
 type name = Syntax.name
 
 (** Machine values. *)
