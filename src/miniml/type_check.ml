@@ -40,7 +40,18 @@ and type_of ctx {Zoo.data=e; loc} =
     | Apply (e1, e2) ->
       begin match type_of ctx e1 with
 	  TArrow (ty1, ty2) -> check ctx ty1 e2 ; ty2
-	| ty ->
+	  | ty ->
 	  typing_error ~loc
             "this expression is used as a function but its type is %t" (Print.ty ty)
       end
+    |Raise e ->
+      ignore (type_of ctx e);
+      TArrow (TInt,Tint)
+    | TryWith (e1 , e2) ->
+      let ty = type_of ctx in 
+      check ctx ty e2 ;
+      ty
+    | DivByZero msg
+    | GenExp msg ->
+      ignore (type_of ctx msg);
+      TArrow (Tint,Tint)

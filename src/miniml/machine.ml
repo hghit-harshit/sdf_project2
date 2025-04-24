@@ -55,6 +55,8 @@ and instr =
   | IBranch of frame * frame        (** branch *)
   | ICall                           (** execute a closure *)
   | IPopEnv                         (** pop environment *)
+  | IRaise
+  | IHandle
 
 (** A frame is a list (stack) of instructions *)
 and frame = instr list

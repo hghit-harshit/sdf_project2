@@ -7,7 +7,7 @@ type 'a located = private { data : 'a ; loc : location }
 (** Tag a datum with an (optional) location. *)
 val locate : ?loc:location -> 'a -> 'a located
 
-(** Convert a [Lexing.lexbuf] location to a [location] *)
+(** Convert a [Lexing.lexbuf] location to a [location] **)
 val location_of_lex : Lexing.lexbuf -> location
 
 (** [make_location p1 p2] creates a location which starts at [p1] and ends at [p2]. *)

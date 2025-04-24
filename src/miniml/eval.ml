@@ -5,7 +5,7 @@
    language, see modules Machine and Compile.
 *)
 
-open Syntax
+open Syntax;;
 
 (** [is_value e] returns true, if program [e] is a value. *)
 let is_value = function

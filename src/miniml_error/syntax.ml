@@ -25,6 +25,10 @@ and expr' =
   | Fun of name * name * ty * ty * expr (* Function [fun f(x:s):t is e] *)
   | Apply of expr * expr 		(* Application [e1 e2] *)
   | Abort                               (* Special value indicating an error *)
+  | Raise of expr
+  | TryWith of expr * expr
+  | DivByZero of expr
+  | GenExp of expr
 
 (* Toplevel commands *)
 type command =

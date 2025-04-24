@@ -2,13 +2,14 @@
     "ocaml.lsp.server.diagnostics": false,
 
     "ocaml.sandbox": {
-        "kind": "opam",
-        "switch": "default"
+        "kind": "custom",
+        "template": "opam exec --switch=4.13.1 --set-switch -- $prog $args --"
     },
  
     "ocaml.trace.server": "off",
     "ocaml.lsp.dune.diagnostics": false,
     "ocamllsp.dune.diagnostics": false,
-    "ocaml.dune.autoDetect": false
+    "ocaml.dune.autoDetect": false,
+    "ocaml.lsp.serverCommand": ["ocamllsp"]
 
 }

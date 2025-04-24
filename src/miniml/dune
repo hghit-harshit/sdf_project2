@@ -1,5 +1,6 @@
 (executable
  (name miniml)
+  (modules lexer parser syntax machine compile miniml)
  (libraries zoo)
  (promote
   (until-clean)
