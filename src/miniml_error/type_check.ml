@@ -18,6 +18,7 @@ let rec check ctx ty ({Zoo.loc;_} as e) =
 (** [type_of ctx e] computes the type of expression [e] in context
     [ctx]. If [e] does not have a type it raises the [Type_error]
     exception. *)
+
 and type_of ctx {Zoo.data=e; loc} =
   match e with
     | Abort -> assert false (* this should not happen as the user has no way of referring to Abort *)
@@ -46,14 +47,14 @@ and type_of ctx {Zoo.data=e; loc} =
     typing_error ~loc
             "this expression is used as a function but its type is %t" (Print.ty ty)
       end
-    |Raise e ->
+    (* |Raise e ->
       ignore (type_of ctx e);
-      TArrow (TInt,Tint)
-    | TryWith (e1 , e2) ->
-      let ty = type_of ctx in 
+      TArrow (TInt,Tint) *)
+    | TryWith (e1 , e2) -> 
+      let ty = type_of ctx e1 in 
       check ctx ty e2 ;
       ty
-    | DivByZero msg
+    (* | DivByZero msg
     | GenExp msg ->
       ignore (type_of ctx msg);
-      TArrow (Tint,Tint)
+      TArrow (Tint,Tint) *)

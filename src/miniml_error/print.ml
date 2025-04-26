@@ -15,3 +15,4 @@ let mvalue m ppf =
     | Machine.MBool b -> Zoo.print_parens ppf "%b" b
     | Machine.MClosure _ -> Zoo.print_parens ppf "<fun>"
     | Machine.MError -> Zoo.print_parens ppf "error"
+    | Machine.MException msg -> Zoo.print_parens ppf "%s" msg
