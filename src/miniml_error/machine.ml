@@ -36,7 +36,7 @@ type mvalue =
   | MBool of bool                      (** Boolean value *)
   | MClosure of name * frame * environ (** Closure *)
   | MError                             (** Error state *)
-  | MException of string
+  | MException of string               (** Exception Value*)
 
 
 (**
@@ -73,11 +73,7 @@ and instr =
 (** A frame is a list (stack) of instructions *)
 and frame = instr list
 
-(** a frame inside with block*)
-and handle = frame
 
-(** hanlers are stack of hanles*)
-and handlers = frame list
 
 (** An environment is an association list mapping names to values *)
 and environ = (name * mvalue) list
