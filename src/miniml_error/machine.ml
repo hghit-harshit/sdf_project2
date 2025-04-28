@@ -73,8 +73,6 @@ and instr =
 (** A frame is a list (stack) of instructions *)
 and frame = instr list
 
-
-
 (** An environment is an association list mapping names to values *)
 and environ = (name * mvalue) list
 
