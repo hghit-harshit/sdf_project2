@@ -69,6 +69,7 @@ and instr =
   | IPopEnv                         (** pop environment *)
   (* | IRaise                          * Raise an exception *)
   | IHandle of frame * frame        (** Handles exception*)
+  | IExc of name                   (** To identify Exception*)
 
 (** A frame is a list (stack) of instructions *)
 and frame = instr list
@@ -126,7 +127,7 @@ let mult = function
 
 (** Division *)
 let quot = function
-  | (MInt 0) :: (MInt _) :: s -> MException "DivByZero"::s
+  | (MInt 0) :: (MInt _) :: s -> MException "DivisionByZero"::s
   | (MInt x) :: (MInt y) :: s -> MInt (y / x) :: s
   | _ -> error "int and int expected in mult"
 
@@ -192,20 +193,26 @@ let exec instr frms stck envs =
 	   | [] -> error "no environment to pop"
 	   | _ :: envs' -> (frms, stck, envs'))
     | IHandle (f1,f2) -> (f1::f2::frms, stck ,envs)
+    | IExc _ -> (frms, stck, envs)
 
 (** [run frm env] executes the frame [frm] in environment [env].*)
 let run frm env =
   let rec loop = function
     | (_, MError::_, _) -> MError
     | ([],MException msg::_,_) -> MException msg  (*Handles exception*)
-    | (_::(i::handl)::rest, MException msg::stc,envs)->
-      Zoo.print_info "Handling Exception %s@." msg;
-      loop (exec i (handl::rest) stc envs)
-    (*Handling case wher tyr block doesnt throw exception*)
-    | ([]::_::rest,v::stck,envs) 
-      when not (match v with MException _ -> true | _ -> false)->
-        loop (rest, v::stck, envs)
-
+     (*Handling case wher tyr block doesnt throw exception*)
+     | ([]::_::rest,v::stck,envs) 
+     when not (match v with MException _ -> true | _ -> false)->
+       loop (rest, v::stck, envs)
+    | (_::(IExc e::handl)::rest, MException msg::stc,envs)->
+      begin
+        match e with
+        | x when x = msg ->
+          Zoo.print_info "Handling Exception %s@." msg;
+          loop ((handl::rest), stc, envs)
+        | _ -> MException msg
+      end
+   
     | ([], [v], _) -> v
     | ((i::is) :: frms, stck, envs) -> loop (exec i (is::frms) stck envs)
     | ([] :: frms, stck, envs) -> loop (frms, stck, envs)

@@ -24,7 +24,8 @@
 // %token DIVZERO GENEX
 %token LBRAC RBRAC
 %token TRY WITH
-
+%token PIPE 
+%token <string>EXC
 
 %start file
 %type <Syntax.command list> file
@@ -87,12 +88,8 @@ plain_expr:
     { Fun (x, f, t1, t2, e) }
   // | RAISE e = expr
   //   { Raise e}
-  | TRY LBRAC e1 = expr RBRAC WITH LBRAC e2 = expr RBRAC
-    { TryWith (e1,e2) }
-  // | DIVZERO LPAREN msg = expr RPAREN
-  //   { DivByZero msg}
-  // | GENEX LPAREN msg = expr RPAREN
-  //   { GenExp msg}
+  | TRY LBRAC e1 = expr RBRAC WITH LBRAC PIPE exc = EXC TARROW e2 = expr RBRAC
+    { TryWith (e1,exc,e2) }
 
 app_expr: mark_position(plain_app_expr) { $1 }
 plain_app_expr:

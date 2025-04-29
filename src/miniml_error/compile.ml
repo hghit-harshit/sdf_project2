@@ -19,4 +19,4 @@ let rec compile {Zoo.data=e'; _} =
     | Syntax.Fun (f, x, _, _, e) -> [IClosure (f, x, compile e @ [IPopEnv])]
     | Syntax.Apply (e1, e2) -> (compile e1) @ (compile e2) @ [ICall]
     (* | Syntax.Raise ( msg ) -> [IRaise msg] *)
-    | Syntax.TryWith (e1,e2) -> [IHandle ( compile e1 ,compile e2)]
+    | Syntax.TryWith (e1,exc,e2) -> [IHandle ( compile e1 ,[IExc exc]@compile e2)]

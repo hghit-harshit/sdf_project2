@@ -10,6 +10,9 @@ rule token = parse
   | ['0'-'9']+      { INT (int_of_string(Lexing.lexeme lexbuf)) }
   | "try"           { TRY }
   | "with"          { WITH }
+  | '|'             { PIPE }
+  | "DivisionByZero"
+  | "GenericException" { EXC (Lexing.lexeme lexbuf)}
   | "int"           { TINT }
   | "bool"          { TBOOL }
   | "true"          { TRUE }
@@ -38,5 +41,3 @@ rule token = parse
   (* | "raise"         { RAISE }
   | "DivByZero"     { DIVZERO }
   | "GenExp"        { GENEX } *)
-{
-}

@@ -50,7 +50,7 @@ and type_of ctx {Zoo.data=e; loc} =
     (* |Raise e ->
       ignore (type_of ctx e);
       TArrow (TInt,Tint) *)
-    | TryWith (e1 , e2) -> 
+    | TryWith (e1 ,_, e2) -> 
       let ty = type_of ctx e1 in 
       check ctx ty e2 ;
       ty
