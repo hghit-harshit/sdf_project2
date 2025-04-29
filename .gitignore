@@ -4,3 +4,4 @@ _site
 _build
 *.exe
 .DS_Store
+.vscode/ 

@@ -18,7 +18,7 @@ let locate ?(loc=Nowhere) x = { data = x; loc = loc }
 exception Error of (location * string * string)
 
 (** [error ~loc ~kind] raises an error of the given [kind]. The [kfprintf] magic allows
-    one to write [msg] using a format string. *)
+    one to write [msg] using a format string. **)
 let error ?(kind="Error") ?(loc=Nowhere) =
   let k _ =
     let msg = Format.flush_str_formatter () in
@@ -175,6 +175,7 @@ struct
         syntax_error ~loc:(location_of_lex lex) "syntax error"
 
   (** Load directives from the given file. *)
+  
   let use_file ctx (filename, _interactive) =
     match L.file_parser with
     | Some f ->

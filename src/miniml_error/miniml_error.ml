@@ -28,7 +28,15 @@ module MiniMLError = Zoo.Main (struct
       let ty = Type_check.type_of ctx e in
       let frm = Compile.compile e in
       let v = Machine.run frm env in
-      Zoo.print_info "- : %t = %t@." (Print.ty ty) (Print.mvalue v) ;
+
+      Zoo.print_info "- : %t = %t@." (match v with
+       | Machine.MException _ ->
+         (* force the type printer to show “Exception” *)
+         fun ppf -> Format.fprintf ppf "Exception"
+       | _ ->
+         (* otherwise, show the real type *)
+         Print.ty ty)
+      (Print.mvalue v) ;
       (ctx, env)
     | Syntax.Def (x, e) ->
       (* check the type of [e], compile it, run it, and return a new

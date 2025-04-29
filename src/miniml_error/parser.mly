@@ -20,6 +20,11 @@
 %token LET
 %token SEMISEMI
 %token EOF
+// %token RAISE TRY WITH
+// %token DIVZERO GENEX
+%token LBRAC RBRAC
+%token TRY WITH
+
 
 %start file
 %type <Syntax.command list> file
@@ -80,6 +85,14 @@ plain_expr:
     { If (e1, e2, e3) }
   | FUN x = VAR LPAREN f = VAR COLON t1 = ty RPAREN COLON t2 = ty IS e = expr
     { Fun (x, f, t1, t2, e) }
+  // | RAISE e = expr
+  //   { Raise e}
+  | TRY LBRAC e1 = expr RBRAC WITH LBRAC e2 = expr RBRAC
+    { TryWith (e1,e2) }
+  // | DIVZERO LPAREN msg = expr RPAREN
+  //   { DivByZero msg}
+  // | GENEX LPAREN msg = expr RPAREN
+  //   { GenExp msg}
 
 app_expr: mark_position(plain_app_expr) { $1 }
 plain_app_expr:
@@ -100,6 +113,8 @@ plain_simple_expr:
     { Int n }
   | LPAREN e = plain_expr RPAREN  
     { e }    
+  | LBRAC e = plain_expr RBRAC
+    { e }
 
 ty:
   | TBOOL
