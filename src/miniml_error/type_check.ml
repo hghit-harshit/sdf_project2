@@ -7,6 +7,7 @@ let typing_error ~loc = Zoo.error ~kind:"Type error" ~loc
 (** [check ctx ty e] verifies that expression [e] has type [ty] in
     context [ctx]. If it does, it returns unit, otherwise it raises the
     [Type_error] exception. *)
+
 let rec check ctx ty ({Zoo.loc;_} as e) =
   let ty' = type_of ctx e in
     if ty' <> ty then
@@ -50,10 +51,10 @@ and type_of ctx {Zoo.data=e; loc} =
     (* |Raise e ->
       ignore (type_of ctx e);
       TArrow (TInt,Tint) *)
-    | TryWith (e1 ,_, e2) -> 
-      let ty = type_of ctx e1 in 
+    | TryWith (_ ,_, e2) -> type_of ctx e2
+      (* let ty = type_of ctx e1 in 
       check ctx ty e2 ;
-      ty
+      ty *)
     (* | DivByZero msg
     | GenExp msg ->
       ignore (type_of ctx msg);

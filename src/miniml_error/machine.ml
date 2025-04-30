@@ -109,6 +109,7 @@ let pop = function
 (** Pop a boolean value from a stack. *)
 let pop_bool = function
     MBool b :: s -> (b, s)
+  | MException _::s -> (true,MException "GenericException"::s)
   | _ -> error "bool expected"
 
 (** Pop a value and a closure from a stack. *)
@@ -123,32 +124,38 @@ let pop_app = function
 (** Multiplication *)
 let mult = function
     (MInt x) :: (MInt y) :: s -> MInt (y * x) :: s
+  | _::_::s-> MException "GenericException"::s
   | _ -> error "int and int expected in mult"
 
 (** Division *)
 let quot = function
   | (MInt 0) :: (MInt _) :: s -> MException "DivisionByZero"::s
   | (MInt x) :: (MInt y) :: s -> MInt (y / x) :: s
+  | _::_::s -> MException "GenericException"::s
   | _ -> error "int and int expected in mult"
 
 (** Addition *)
 let add = function
     (MInt x) :: (MInt y) :: s -> MInt (y + x) :: s
+  | _::_::s-> MException "GenericException"::s
   | _ -> error "int and int expected in add"
 
 (** Subtraction *)
 let sub = function
     (MInt x) :: (MInt y) :: s -> MInt (y - x) :: s
+  | _::_::s-> MException "GenericException"::s
   | _ -> error "int and int expected in sub"
 
 (** Equality *)
 let equal = function
     (MInt x) :: (MInt y) :: s -> MBool (y = x) :: s
+  | _::_::s-> MException "GenericException"::s
   | _ -> error "int and int expected in equal"
 
 (** Less than *)
 let less = function
     (MInt x) :: (MInt y) :: s -> MBool (y < x) :: s
+  | _::_::s-> MException "GenericException"::s
   | _ -> error "int and int expected in less"
 
 
@@ -184,14 +191,21 @@ let exec instr frms stck envs =
     (* Control instructions *)
     | IBranch (f1, f2) ->
 	let (b, stck') = pop_bool stck in
-	  ((if b then f1 else f2) :: frms, stck', envs)
+  begin
+    match stck' with
+    |MException _::_ -> (frms, stck',envs)
+    | _ -> ((if b then f1 else f2) :: frms, stck', envs)
+  end
     | ICall ->
 	let (x, frm, env, v, stck') = pop_app stck in
 	  (frm :: frms, stck', ((x,v) :: env) :: envs)
     | IPopEnv ->
-	(match envs with
-	   | [] -> error "no environment to pop"
-	   | _ :: envs' -> (frms, stck, envs'))
+      ( match frms with
+      | [] -> error "no frame to pop after IPopEnv"
+      | _current_frame :: frms' ->
+          (* pop both the current (empty) frame and the env *)
+          (frms', stck, 
+           match envs with _ :: envs' -> envs' | [] -> error "no env"))
     | IHandle (f1,f2) -> (f1::f2::frms, stck ,envs)
     | IExc _ -> (frms, stck, envs)
 
@@ -216,6 +230,10 @@ let run frm env =
     | ([], [v], _) -> v
     | ((i::is) :: frms, stck, envs) -> loop (exec i (is::frms) stck envs)
     | ([] :: frms, stck, envs) -> loop (frms, stck, envs)
-    | _ -> error "illegal end of program"
+    | _ -> 
+      Zoo.print_info
+     "Exiting run: frames=%d"
+     (List.length frm);
+      error "illegal end of program"
   in
     loop ([frm], [], [env])
